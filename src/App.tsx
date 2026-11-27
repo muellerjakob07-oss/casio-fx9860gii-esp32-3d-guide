@@ -3,6 +3,7 @@ import { ChecklistPanel } from './components/ChecklistPanel'
 import { ControlsHud } from './components/ControlsHud'
 import { InspectorModal } from './components/InspectorModal'
 import { LivePhaseBanner } from './components/LivePhaseBanner'
+import { PhotoReferenceModal } from './components/PhotoReferenceModal'
 import { StepGuideCard } from './components/StepGuideCard'
 import { StepStepper } from './components/StepStepper'
 import { TopBar } from './components/TopBar'
@@ -12,7 +13,7 @@ import { CAMERA_PRESETS, STEPS } from './data/stepsData'
 import { Scene3D } from './three/Scene3D'
 import type { CameraPresetId, CameraTarget, ComponentSpec, LivePhase, ThemeMode } from './types'
 
-const CHECKLIST_STORAGE_KEY = 'casio_esp32_checklist_v1'
+const CHECKLIST_STORAGE_KEY = 'casio_esp32_checklist_v2'
 
 class WebGLErrorBoundary extends Component<
   { children: ReactNode },
@@ -50,7 +51,14 @@ class WebGLErrorBoundary extends Component<
 
 function getInitialParams() {
   if (typeof window === 'undefined') {
-    return { step: 1, explode: 0, theme: 'dark' as ThemeMode, inspect: null as string | null }
+    return {
+      step: 1,
+      explode: 0,
+      theme: 'dark' as ThemeMode,
+      inspect: null as string | null,
+      preset: null as CameraPresetId | null,
+      photos: false,
+    }
   }
   const params = new URLSearchParams(window.location.search)
   const rawStep = Number(params.get('step'))
@@ -59,7 +67,10 @@ function getInitialParams() {
   const explode = Number.isFinite(rawExplode) ? Math.max(0, Math.min(100, rawExplode)) : 0
   const theme: ThemeMode = params.get('theme') === 'light' ? 'light' : 'dark'
   const inspect = params.get('inspect')
-  return { step, explode, theme, inspect }
+  const rawPreset = params.get('preset') as CameraPresetId | null
+  const preset = rawPreset && rawPreset in CAMERA_PRESETS ? rawPreset : null
+  const photos = params.get('photos') === '1'
+  return { step, explode, theme, inspect, preset, photos }
 }
 
 export default function App() {
@@ -76,14 +87,17 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(initial.inspect)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [activePreset, setActivePreset] = useState<CameraPresetId | null>(
-    initial.step === 1 ? 'overview' : null,
+    initial.preset ?? (initial.step === 1 ? 'overview' : null),
   )
-  const [cameraGoal, setCameraGoal] = useState<CameraTarget>(initialStepDef.camera)
+  const [cameraGoal, setCameraGoal] = useState<CameraTarget>(
+    initial.preset ? CAMERA_PRESETS[initial.preset].camera : initialStepDef.camera,
+  )
   const [flightNonce, setFlightNonce] = useState<number>(0)
 
   const [guideCollapsed, setGuideCollapsed] = useState<boolean>(false)
   const [hudCollapsed, setHudCollapsed] = useState<boolean>(Boolean(initial.inspect))
   const [checklistOpen, setChecklistOpen] = useState<boolean>(false)
+  const [photosOpen, setPhotosOpen] = useState<boolean>(initial.photos)
   const [livePhase, setLivePhase] = useState<LivePhase>(initial.step === 8 ? 'lcd' : 'idle')
   const [liveCycleNonce, setLiveCycleNonce] = useState<number>(0)
 
@@ -173,6 +187,7 @@ export default function App() {
       } else if (e.key === 'Escape') {
         setSelectedId(null)
         setChecklistOpen(false)
+        setPhotosOpen(false)
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -222,6 +237,7 @@ export default function App() {
         checklistDone={checkedIds.length}
         checklistTotal={CHECKLIST_ITEMS.length}
         onOpenChecklist={() => setChecklistOpen(true)}
+        onOpenPhotos={() => setPhotosOpen(true)}
       />
 
       {/* Step 8 Live Gemini Pipeline Indicator */}
@@ -300,6 +316,13 @@ export default function App() {
         onReset={() => setCheckedIds([])}
         onJumpToStep={handleSelectStep}
         onClose={() => setChecklistOpen(false)}
+      />
+
+      {/* Real Teardown Photos Reference Modal */}
+      <PhotoReferenceModal
+        open={photosOpen}
+        onClose={() => setPhotosOpen(false)}
+        onJumpToStep={handleSelectStep}
       />
     </div>
   )

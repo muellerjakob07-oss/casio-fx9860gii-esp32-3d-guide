@@ -259,7 +259,8 @@ export function createLiveLcdController(): LiveLcdController {
 }
 
 // ============================================================================
-// Casio fx-9860GII Authentic Front Faceplate Texture (Keypad + Branding)
+// Casio fx-9860GII Authentic Two-Tone Front Faceplate Texture (matches image_6.png!)
+// Pearl-Silver Outer Body + Dark Anthracite Display/Function Inlay
 // ============================================================================
 export function createCasioFrontTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
@@ -267,135 +268,162 @@ export function createCasioFrontTexture(): THREE.CanvasTexture {
   canvas.height = 2048
   const ctx = canvas.getContext('2d')!
 
-  // Matte charcoal-silver metallic calculator body
-  const grad = ctx.createLinearGradient(0, 0, 1024, 2048)
-  grad.addColorStop(0, '#32363f')
-  grad.addColorStop(0.5, '#2a2d35')
-  grad.addColorStop(1, '#23262d')
-  ctx.fillStyle = grad
+  // Pearl-silver / light warm-white outer shell (exact match to image_6.png!)
+  const bodyGrad = ctx.createLinearGradient(0, 0, 1024, 2048)
+  bodyGrad.addColorStop(0, '#e6e9ef')
+  bodyGrad.addColorStop(0.5, '#dcdfe6')
+  bodyGrad.addColorStop(1, '#cfd4dd')
+  ctx.fillStyle = bodyGrad
   ctx.fillRect(0, 0, 1024, 2048)
 
-  // Silver-grey brushed top bezel around LCD
-  const bezelGrad = ctx.createLinearGradient(0, 60, 0, 740)
-  bezelGrad.addColorStop(0, '#5a606d')
-  bezelGrad.addColorStop(1, '#434853')
-  ctx.fillStyle = bezelGrad
+  // Sculpted Dark Anthracite Bezel + Upper Function Keypad Inlay
+  const inlayGrad = ctx.createLinearGradient(0, 145, 0, 1300)
+  inlayGrad.addColorStop(0, '#272a31')
+  inlayGrad.addColorStop(0.55, '#2f333c')
+  inlayGrad.addColorStop(1, '#363b45')
+  ctx.fillStyle = inlayGrad
   ctx.beginPath()
-  ctx.roundRect(70, 82, 884, 650, 38)
+  ctx.roundRect(74, 148, 876, 1148, 42)
   ctx.fill()
 
-  // Dark inner glass bezel frame
-  ctx.fillStyle = '#14171c'
+  // Recessed Dark LCD Window Frame
+  ctx.fillStyle = '#1b1e24'
   ctx.beginPath()
-  ctx.roundRect(102, 165, 820, 495, 22)
+  ctx.roundRect(102, 174, 820, 488, 20)
   ctx.fill()
 
-  // CASIO Logo & fx-9860GII branding
-  ctx.fillStyle = '#f1f5f9'
-  ctx.font = 'bold 46px Inter, system-ui, sans-serif'
-  ctx.fillText('CASIO', 112, 142)
+  // CASIO Logo (bold dark navy/slate on silver header) & italic fx-9860GII
+  ctx.fillStyle = '#2d3340'
+  ctx.textAlign = 'left'
+  ctx.font = '900 44px Inter, system-ui, sans-serif'
+  ctx.fillText('CASIO', 112, 118)
 
-  ctx.fillStyle = '#cbd5e1'
-  ctx.font = 'italic 600 32px Inter, system-ui, sans-serif'
-  ctx.fillText('fx-9860GII', 698, 140)
+  ctx.fillStyle = '#3c4252'
+  ctx.textAlign = 'right'
+  ctx.font = 'italic 700 32px Georgia, serif'
+  ctx.fillText('fx-9860GII', 908, 116)
 
-  ctx.fillStyle = '#94a3b8'
-  ctx.font = '600 20px Inter, system-ui, sans-serif'
+  // USB POWER GRAPHIC 2 under LCD
   ctx.textAlign = 'center'
+  ctx.fillStyle = '#f1f5f9'
+  ctx.font = '700 22px Inter, system-ui, sans-serif'
   ctx.fillText('USB POWER GRAPHIC 2', 512, 704)
 
-  // Function Keys F1-F6 labels above keys
-  const fKeys = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6']
-  ctx.font = 'bold 22px Inter, system-ui, sans-serif'
-  fKeys.forEach((lbl, i) => {
-    const x = 138 + i * 149
-    ctx.fillStyle = '#e2e8f0'
-    ctx.fillText(lbl, x, 795)
-    // Silver pill key visual backing
-    ctx.fillStyle = '#7b8394'
+  // F1-F6 golden shift labels + silver oval keys
+  const fMeta = [
+    ['F1', 'Trace'],
+    ['F2', 'Zoom'],
+    ['F3', 'V-Window'],
+    ['F4', 'Sketch'],
+    ['F5', 'G-Solv'],
+    ['F6', 'G↔T'],
+  ]
+  fMeta.forEach(([key, sub], i) => {
+    const x = 144 + i * 147
+    ctx.fillStyle = '#e0a93b'
+    ctx.font = '600 16px Inter, system-ui, sans-serif'
+    ctx.fillText(sub, x, 756)
+
+    ctx.fillStyle = '#d8dde6'
     ctx.beginPath()
-    ctx.roundRect(x - 44, 808, 88, 42, 12)
+    ctx.roundRect(x - 44, 770, 88, 52, 20)
     ctx.fill()
+
+    ctx.fillStyle = '#232730'
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif'
+    ctx.fillText(key, x, 804)
   })
 
-  // Upper control keys (SHIFT, OPTN, VARS, MENU, ALPHA, x,θ,T, EXIT) + REPLAY ring
-  const ctrlRows: { label: string; sub?: string; x: number; y: number; bg: string; fg: string }[] = [
-    { label: 'SHIFT', x: 155, y: 920, bg: '#d9a422', fg: '#111827' },
-    { label: 'OPTN', x: 305, y: 920, bg: '#3e434f', fg: '#f8fafc' },
-    { label: 'VARS', x: 455, y: 920, bg: '#3e434f', fg: '#f8fafc' },
-    { label: 'MENU', x: 605, y: 920, bg: '#3e434f', fg: '#f8fafc' },
-    { label: 'ALPHA', x: 155, y: 1018, bg: '#c0392b', fg: '#ffffff' },
-    { label: 'x²', x: 305, y: 1018, bg: '#3e434f', fg: '#f8fafc' },
-    { label: '^', x: 455, y: 1018, bg: '#3e434f', fg: '#f8fafc' },
-    { label: 'EXIT', x: 605, y: 1018, bg: '#3e434f', fg: '#f8fafc' },
+  // Blue sun icon + LIGHT label above OPTN
+  ctx.fillStyle = '#38bdf8'
+  ctx.font = 'bold 16px Inter, system-ui, sans-serif'
+  ctx.fillText('☀ LIGHT', 302, 874)
+  ctx.fillStyle = '#e0a93b'
+  ctx.fillText('PRGM', 452, 874)
+  ctx.fillText('SET UP', 602, 874)
+
+  // Control keys (SHIFT, OPTN, VARS, MENU / ALPHA, x², ^, EXIT)
+  const ctrlRows: { label: string; x: number; y: number; bg: string; fg: string }[] = [
+    { label: 'SHIFT', x: 152, y: 916, bg: '#e39d25', fg: '#ffffff' },
+    { label: 'OPTN', x: 302, y: 916, bg: '#22262e', fg: '#f8fafc' },
+    { label: 'VARS', x: 452, y: 916, bg: '#22262e', fg: '#f8fafc' },
+    { label: 'MENU', x: 602, y: 916, bg: '#22262e', fg: '#f8fafc' },
+    { label: 'ALPHA', x: 152, y: 1012, bg: '#d94832', fg: '#ffffff' },
+    { label: 'x²', x: 302, y: 1012, bg: '#22262e', fg: '#f8fafc' },
+    { label: '∧', x: 452, y: 1012, bg: '#22262e', fg: '#f8fafc' },
+    { label: 'EXIT', x: 602, y: 1012, bg: '#22262e', fg: '#f8fafc' },
   ]
   for (const k of ctrlRows) {
     ctx.fillStyle = k.bg
     ctx.beginPath()
-    ctx.roundRect(k.x - 54, k.y - 26, 108, 54, 14)
+    ctx.roundRect(k.x - 54, k.y - 27, 108, 54, 16)
     ctx.fill()
     ctx.fillStyle = k.fg
     ctx.font = 'bold 22px Inter, system-ui, sans-serif'
     ctx.fillText(k.label, k.x, k.y + 8)
   }
 
-  // Iconic Circular Silver REPLAY D-Pad on right side
-  const rx = 812
-  const ry = 968
-  const dGrad = ctx.createRadialGradient(rx - 20, ry - 20, 12, rx, ry, 108)
-  dGrad.addColorStop(0, '#cfd6e2')
-  dGrad.addColorStop(0.6, '#8b93a3')
-  dGrad.addColorStop(1, '#585f6e')
+  // Pearl-Silver Circular REPLAY D-Pad on right side (matches image_6.png!)
+  const rx = 808
+  const ry = 964
+  const dGrad = ctx.createRadialGradient(rx - 18, ry - 18, 12, rx, ry, 106)
+  dGrad.addColorStop(0, '#eef1f6')
+  dGrad.addColorStop(0.7, '#cfd5e0')
+  dGrad.addColorStop(1, '#9aa2b1')
   ctx.fillStyle = dGrad
   ctx.beginPath()
   ctx.arc(rx, ry, 102, 0, Math.PI * 2)
   ctx.fill()
-  ctx.fillStyle = '#2b2f38'
+  ctx.strokeStyle = '#aeb6c4'
+  ctx.lineWidth = 3
   ctx.beginPath()
-  ctx.arc(rx, ry, 34, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.fillStyle = '#e2e8f0'
-  ctx.font = 'bold 17px Inter, system-ui, sans-serif'
-  ctx.fillText('REPLAY', rx, ry - 114)
+  ctx.arc(rx, ry, 62, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.fillStyle = '#7c8596'
+  ctx.font = '600 16px Inter, system-ui, sans-serif'
+  ctx.fillText('REPLAY', rx, ry + 6)
 
-  // Scientific row keys (3 rows x 6 cols)
+  // Scientific rows (dark charcoal keys inside inlay)
   const sciRows = [
     ['X,θ,T', 'log', 'ln', 'sin', 'cos', 'tan'],
     ['a b/c', 'F↔D', '(', ')', ',', '→'],
   ]
   sciRows.forEach((row, rIdx) => {
     row.forEach((lbl, cIdx) => {
-      const x = 138 + cIdx * 149
-      const y = 1138 + rIdx * 102
-      ctx.fillStyle = '#383d47'
+      const x = 144 + cIdx * 147
+      const y = 1134 + rIdx * 100
+      ctx.fillStyle = '#1f232b'
       ctx.beginPath()
-      ctx.roundRect(x - 52, y - 28, 104, 56, 14)
+      ctx.roundRect(x - 52, y - 27, 104, 54, 15)
       ctx.fill()
-      ctx.fillStyle = '#f1f5f9'
-      ctx.font = '600 22px Inter, system-ui, sans-serif'
+      ctx.fillStyle = '#f8fafc'
+      ctx.font = 'bold 22px Inter, system-ui, sans-serif'
       ctx.fillText(lbl, x, y + 8)
     })
   })
 
-  // Lower numeric keypad (4 rows x 5 cols) — authentic white numbers + blue AC/ON & EXE
+  // Lower Numeric Keypad on Light Pearl-Silver Body (white keys + slate-blue DEL/AC/EXE!)
   const numRows = [
     ['7', '8', '9', 'DEL', 'AC/ON'],
     ['4', '5', '6', '×', '÷'],
     ['1', '2', '3', '+', '−'],
-    ['0', '.', '×10ˣ', '(-)', 'EXE'],
+    ['0', '·', 'EXP', '(−)', 'EXE'],
   ]
   numRows.forEach((row, rIdx) => {
     row.forEach((lbl, cIdx) => {
-      const x = 152 + cIdx * 180
-      const y = 1380 + rIdx * 146
-      const isBlue = lbl === 'AC/ON' || lbl === 'DEL' || lbl === 'EXE'
-      const isWhite = cIdx < 3
-      ctx.fillStyle = isBlue ? '#1c64b0' : isWhite ? '#e8ecf2' : '#4a505e'
+      const x = 156 + cIdx * 178
+      const y = 1390 + rIdx * 148
+      const isAction = lbl === 'DEL' || lbl === 'AC/ON' || lbl === 'EXE'
+      ctx.fillStyle = isAction ? '#9eb2c7' : '#f7f8fa'
+      ctx.strokeStyle = 'rgba(15,23,42,0.18)'
+      ctx.lineWidth = 3
       ctx.beginPath()
-      ctx.roundRect(x - 66, y - 42, 132, 86, 18)
+      ctx.roundRect(x - 68, y - 42, 136, 84, 24)
       ctx.fill()
-      ctx.fillStyle = isWhite ? '#14171f' : '#ffffff'
-      ctx.font = `bold ${lbl.length > 2 ? 26 : 36}px Inter, system-ui, sans-serif`
+      ctx.stroke()
+
+      ctx.fillStyle = '#1e2430'
+      ctx.font = `bold ${lbl.length > 2 ? 25 : 36}px Inter, system-ui, sans-serif`
       ctx.fillText(lbl, x, y + 12)
     })
   })
@@ -407,7 +435,7 @@ export function createCasioFrontTexture(): THREE.CanvasTexture {
 }
 
 // ============================================================================
-// Casio Back Shell Subtle Molded Engraving Texture
+// Casio Matte Black Rear Shell Texture (Horizontal 4xAAA Cutout + RESET Hole)
 // ============================================================================
 export function createCasioBackTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
@@ -415,43 +443,50 @@ export function createCasioBackTexture(): THREE.CanvasTexture {
   canvas.height = 1024
   const ctx = canvas.getContext('2d')!
 
-  ctx.fillStyle = '#252830'
+  ctx.fillStyle = '#181b21'
   ctx.fillRect(0, 0, 512, 1024)
 
-  // Subtle molded micro-texture grain
-  ctx.fillStyle = 'rgba(255,255,255,0.018)'
+  // Subtle matte ABS grain
+  ctx.fillStyle = 'rgba(255,255,255,0.016)'
   for (let i = 0; i < 1600; i++) {
     ctx.fillRect((i * 73) % 512, (i * 139) % 1024, 2, 2)
   }
 
-  // Molded recessed specification label
-  ctx.strokeStyle = 'rgba(255,255,255,0.09)'
+  // Molded recessed rating plate on upper half
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)'
   ctx.lineWidth = 2
-  ctx.strokeRect(110, 120, 292, 150)
+  ctx.strokeRect(110, 128, 292, 146)
 
-  ctx.fillStyle = 'rgba(226,232,240,0.42)'
+  ctx.fillStyle = 'rgba(226,232,240,0.38)'
   ctx.textAlign = 'center'
-  ctx.font = 'bold 24px Inter, system-ui, sans-serif'
-  ctx.fillText('CASIO fx-9860GII', 256, 162)
-  ctx.font = '500 14px Inter, system-ui, sans-serif'
-  ctx.fillText('RATING: DC 6V  0.06W', 256, 196)
-  ctx.fillText('4 × AAA (LR03 / NiMH 1.2V)', 256, 222)
-  ctx.fillText('CR2032 3V BACKUP', 256, 248)
+  ctx.font = 'bold 22px Inter, system-ui, sans-serif'
+  ctx.fillText('CASIO fx-9860GII', 256, 168)
+  ctx.font = '500 13px Inter, system-ui, sans-serif'
+  ctx.fillText('RATING: DC 6V  0.06W', 256, 198)
+  ctx.fillText('USE 4 × AAA SIZE (LR03 / NiMH)', 256, 224)
+  ctx.fillText('MADE IN CHINA • GY493', 256, 250)
 
-  // Cut transparent opening for 4x AAA battery compartment & CR2032 backup window
-  // Plane spans X: -42.75..+42.75 (w=85.5), Z: -89..+89 (h=178)
-  const xToPx = (x: number) => ((x + 42.75) / 85.5) * 512
+  // Plane spans X: -40.75..+40.75 (w=81.5), Z: -89..+89 (h=178)
+  const xToPx = (x: number) => ((x + 40.75) / 81.5) * 512
   const zToPx = (z: number) => ((z + 89.0) / 178.0) * 1024
 
-  // 4x AAA compartment opening
-  ctx.clearRect(xToPx(-39.0), zToPx(32.5), xToPx(11.0) - xToPx(-39.0), zToPx(84.0) - zToPx(32.5))
-  // CR2032 round backup service hatch opening
-  ctx.save()
-  ctx.globalCompositeOperation = 'destination-out'
+  // RESET pinhole ring over SW301 (-24, -4.5)
+  const rx = xToPx(-24.0)
+  const rz = zToPx(-4.5)
+  ctx.strokeStyle = 'rgba(226,232,240,0.45)'
   ctx.beginPath()
-  ctx.arc(xToPx(-24.0), zToPx(13.5), 74, 0, Math.PI * 2)
+  ctx.arc(rx, rz, 10, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.fillStyle = '#050608'
+  ctx.beginPath()
+  ctx.arc(rx, rz, 4.5, 0, Math.PI * 2)
   ctx.fill()
-  ctx.restore()
+  ctx.fillStyle = 'rgba(226,232,240,0.45)'
+  ctx.font = 'bold 11px Inter, system-ui, sans-serif'
+  ctx.fillText('RESET', rx, rz - 14)
+
+  // Cut transparent opening for horizontal 4x AAA battery compartment (X: -20..+32, Z: +26..+72)
+  ctx.clearRect(xToPx(-20.5), zToPx(25.5), xToPx(32.5) - xToPx(-20.5), zToPx(72.5) - zToPx(25.5))
 
   const tex = new THREE.CanvasTexture(canvas)
   tex.colorSpace = THREE.SRGBColorSpace
@@ -459,97 +494,450 @@ export function createCasioBackTexture(): THREE.CanvasTexture {
 }
 
 // ============================================================================
-// Casio Emerald Green FR4 Mainboard PCB Texture (Traces + Silkscreen + Labels)
+// Upper CPU Daughterboard Texture: CY802-1 / RJA532593-001V01 (matches image_5.png!)
+// Dimensions: 69.0 mm wide (X: -36.5..+32.5) x 82.5 mm long (Z: -81.0..+1.5)
 // ============================================================================
-export function createCasioPcbTexture(): THREE.CanvasTexture {
+export function createUpperCpuPcbTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
-  canvas.width = 1024
-  canvas.height = 1400
+  canvas.width = 860
+  canvas.height = 1024
   const ctx = canvas.getContext('2d')!
 
+  const xPx = (x: number) => ((x - -36.5) / 69.0) * 860
+  const zPx = (z: number) => ((z - -81.0) / 82.5) * 1024
+
   // Rich emerald green soldermask
-  const bg = ctx.createLinearGradient(0, 0, 1024, 1400)
-  bg.addColorStop(0, '#0a5e34')
-  bg.addColorStop(0.5, '#0c6b3b')
-  bg.addColorStop(1, '#084e2b')
+  const bg = ctx.createLinearGradient(0, 0, 860, 1024)
+  bg.addColorStop(0, '#0f6c3c')
+  bg.addColorStop(0.5, '#127a44')
+  bg.addColorStop(1, '#0c5b32')
   ctx.fillStyle = bg
-  ctx.fillRect(0, 0, 1024, 1400)
+  ctx.fillRect(0, 0, 860, 1024)
 
-  // Ground plane copper pour zones (slightly brighter emerald under soldermask)
-  ctx.fillStyle = 'rgba(28, 150, 86, 0.34)'
-  ctx.fillRect(42, 42, 940, 1316)
-
-  // Realistic routed 45° copper traces
-  ctx.strokeStyle = '#1b8d52'
-  ctx.lineWidth = 4
-  for (let i = 0; i < 24; i++) {
-    const x = 90 + i * 36
+  // Fine copper trace routing across CPU board
+  ctx.strokeStyle = '#209c5c'
+  ctx.lineWidth = 2.6
+  for (let i = 0; i < 36; i++) {
+    const sx = 65 + i * 21
     ctx.beginPath()
-    ctx.moveTo(x, 120)
-    ctx.lineTo(x, 380 + (i % 5) * 40)
-    ctx.lineTo(x + (i % 2 === 0 ? 44 : -44), 440 + (i % 5) * 40)
-    ctx.lineTo(x + (i % 2 === 0 ? 44 : -44), 980)
+    ctx.moveTo(sx, 75)
+    ctx.lineTo(sx, 260 + (i % 6) * 28)
+    ctx.lineTo(xPx(3.0) + (i - 18) * 6, zPx(-41.5))
+    ctx.stroke()
+  }
+  for (let i = 0; i < 22; i++) {
+    const sy = 180 + i * 34
+    ctx.beginPath()
+    ctx.moveTo(45, sy)
+    ctx.lineTo(815, sy + ((i % 3) - 1) * 18)
     ctx.stroke()
   }
 
-  // Horizontal bus traces
-  ctx.lineWidth = 3
-  for (let i = 0; i < 14; i++) {
-    const y = 520 + i * 28
+  // Diagonal hatch copper-free zone above U101 (visible in image_5.png!)
+  ctx.strokeStyle = 'rgba(180,235,200,0.28)'
+  ctx.lineWidth = 2
+  for (let d = 0; d < 90; d += 12) {
     ctx.beginPath()
-    ctx.moveTo(60, y)
-    ctx.lineTo(960, y)
+    ctx.moveTo(xPx(-10), zPx(-65) + d)
+    ctx.lineTo(xPx(-5), zPx(-68) + d)
     ctx.stroke()
   }
 
-  // Gold plated vias & test points scattered cleanly
-  for (let i = 0; i < 55; i++) {
-    const vx = 75 + ((i * 197) % 870)
-    const vy = 95 + ((i * 263) % 1210)
-    ctx.fillStyle = '#d4af37'
+  // Gold plated vias
+  for (let i = 0; i < 75; i++) {
+    const vx = 55 + ((i * 173) % 750)
+    const vy = 75 + ((i * 229) % 890)
+    ctx.fillStyle = '#d8b243'
     ctx.beginPath()
-    ctx.arc(vx, vy, 7, 0, Math.PI * 2)
+    ctx.arc(vx, vy, 5.2, 0, Math.PI * 2)
     ctx.fill()
-    ctx.fillStyle = '#072a18'
+    ctx.fillStyle = '#07321b'
     ctx.beginPath()
-    ctx.arc(vx, vy, 3, 0, Math.PI * 2)
+    ctx.arc(vx, vy, 2.2, 0, Math.PI * 2)
     ctx.fill()
   }
 
-  // Radial gold bond fanout rings for CPU & RAM COBs
-  const drawCobFanout = (cx: number, cy: number, r: number) => {
-    ctx.strokeStyle = '#c8a33a'
-    ctx.lineWidth = 2.5
-    for (let a = 0; a < 48; a++) {
-      const ang = (a / 48) * Math.PI * 2
-      ctx.beginPath()
-      ctx.moveTo(cx + Math.cos(ang) * (r - 12), cy + Math.sin(ang) * (r - 12))
-      ctx.lineTo(cx + Math.cos(ang) * (r + 22), cy + Math.sin(ang) * (r + 22))
-      ctx.stroke()
-    }
-  }
-  drawCobFanout(360, 710, 118)
-  drawCobFanout(736, 755, 88)
-
-  // Crisp White PCB Silkscreen
-  ctx.fillStyle = 'rgba(248, 250, 252, 0.88)'
-  ctx.font = 'bold 26px "JetBrains Mono", monospace'
-  ctx.fillText('CASIO RJA526862-001V01', 72, 1280)
-  ctx.font = 'bold 20px "JetBrains Mono", monospace'
-  ctx.fillText('CN1 MINI-USB', 235, 118)
-  ctx.fillText('CN2 2.5mm SERIAL', 610, 82)
-  ctx.fillText('U1 CPU (SH4A)', 260, 865)
-  ctx.fillText('U2 FLASH/RAM', 660, 880)
-  ctx.fillText('BT1 CR2032 3V', 135, 1140)
-
-  // Clear white silkscreen outlines for the 3 serial jack pads
-  ctx.strokeStyle = 'rgba(255,255,255,0.8)'
+  // Double white silkscreen rounded borders around U101 (Main CPU COB) & U301 (Secondary COB)
+  ctx.strokeStyle = 'rgba(248, 250, 252, 0.92)'
+  ctx.lineWidth = 4.5
+  ctx.beginPath()
+  ctx.roundRect(xPx(-7.5), zPx(-51.2), 21.0 * (860 / 69), 19.4 * (1024 / 82.5), 48)
+  ctx.stroke()
   ctx.lineWidth = 2.5
-  ctx.strokeRect(598, 92, 232, 165)
+  ctx.beginPath()
+  ctx.roundRect(xPx(-9.2), zPx(-52.8), 24.4 * (860 / 69), 22.6 * (1024 / 82.5), 56)
+  ctx.stroke()
+
+  ctx.lineWidth = 4
+  ctx.beginPath()
+  ctx.roundRect(xPx(-27.8), zPx(-55.2), 13.6 * (860 / 69), 14.4 * (1024 / 82.5), 34)
+  ctx.stroke()
+  ctx.lineWidth = 2.2
+  ctx.beginPath()
+  ctx.roundRect(xPx(-29.2), zPx(-56.8), 16.4 * (860 / 69), 17.6 * (1024 / 82.5), 42)
+  ctx.stroke()
+
+  // Unpopulated JN101 gold SD-card / expansion finger pads on upper-left edge (exact match to image_5.png!)
+  ctx.fillStyle = '#f8fafc'
+  ctx.fillRect(xPx(-35.8), zPx(-67.2), 34, 152)
+  for (let p = 0; p < 9; p++) {
+    ctx.fillStyle = '#e5b949'
+    ctx.fillRect(xPx(-32.6), zPx(-66.6 + p * 1.45), 62, 12)
+  }
+
+  // White silkscreen boxes around CN401's square gold test pads (top-left!)
+  const drawGoldBoxPad = (mx: number, mz: number) => {
+    const px = xPx(mx)
+    const pz = zPx(mz)
+    ctx.strokeStyle = '#f8fafc'
+    ctx.lineWidth = 2.5
+    ctx.strokeRect(px - 19, pz - 19, 38, 38)
+    ctx.fillStyle = '#e6b84a'
+    ctx.fillRect(px - 14, pz - 14, 28, 28)
+  }
+  drawGoldBoxPad(-19.5, -76.8)
+  drawGoldBoxPad(-19.5, -73.0)
+  drawGoldBoxPad(-24.8, -70.8)
+  drawGoldBoxPad(-29.2, -68.8)
+
+  // Two gold square test pads at bottom edge next to C302 (visible in image_5.png!)
+  ctx.fillStyle = '#e6b84a'
+  ctx.fillRect(xPx(-10.5), zPx(-3.6), 34, 42)
+  ctx.fillRect(xPx(-6.5), zPx(-3.6), 34, 42)
+
+  // Gold meandering RESET contact SW301 at bottom-left (-24.0, -4.5)
+  const swX = xPx(-24.0)
+  const swZ = zPx(-4.5)
+  ctx.strokeStyle = 'rgba(248,250,252,0.85)'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.arc(swX, swZ, 44, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.fillStyle = '#e6b84a'
+  ctx.beginPath()
+  ctx.arc(swX, swZ, 22, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.strokeStyle = '#0c5b32'
+  ctx.lineWidth = 3.5
+  for (let m = -14; m <= 14; m += 7) {
+    ctx.beginPath()
+    ctx.moveTo(swX + m, swZ - 16)
+    ctx.lineTo(swX + m, swZ + 16)
+    ctx.stroke()
+  }
+
+  // Dark through-hole circle above C302 (-1.2, -15.0)
+  ctx.fillStyle = '#090b0f'
+  ctx.beginPath()
+  ctx.arc(xPx(-1.2), zPx(-15.0), 22, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Authentic White Silkscreen Labels from CY802-1 / RJA532593-001V01
+  ctx.fillStyle = 'rgba(248, 250, 252, 0.92)'
+  ctx.font = 'bold 18px "JetBrains Mono", monospace'
+  ctx.textAlign = 'left'
+  ctx.fillText('CN401', xPx(-29.5), zPx(-74.0))
+  ctx.fillText('P902', xPx(-35.2), zPx(-78.0))
+  ctx.fillText('Y', xPx(-22.2), zPx(-72.2))
+  ctx.fillText('JN101', xPx(-35.8), zPx(-52.5))
+  ctx.fillText('U301', xPx(-15.0), zPx(-46.5))
+  ctx.fillText('U101', xPx(11.5), zPx(-51.5))
+  ctx.fillText('CN102', xPx(14.5), zPx(-71.2))
+  ctx.fillText('SW301', xPx(-26.8), zPx(0.4))
+  ctx.fillText('C302', xPx(1.8), zPx(-2.0))
+
+  // N40A3585 box
+  ctx.strokeStyle = '#f8fafc'
+  ctx.lineWidth = 2
+  ctx.strokeRect(xPx(-11.8), zPx(-22.2), 96, 38)
+  ctx.font = 'bold 13px "JetBrains Mono", monospace'
+  ctx.fillText('N40A3585', xPx(-11.2), zPx(-20.4))
+  ctx.fillText('A30C5', xPx(-10.2), zPx(-19.2))
+
+  // Vertical right-edge board codes: CY802-1 & RJA532593-001V01
+  ctx.save()
+  ctx.translate(xPx(29.8), zPx(-12.0))
+  ctx.rotate(-Math.PI / 2)
+  ctx.font = 'bold 22px "JetBrains Mono", monospace'
+  ctx.fillText('CY802-1', 0, 0)
+  ctx.font = 'bold 19px "JetBrains Mono", monospace'
+  ctx.fillText('RJA532593-001V01', 165, 0)
+  ctx.font = '600 14px "JetBrains Mono", monospace'
+  ctx.fillText('1S 29-SG071  94V-0', 95, -22)
+  ctx.restore()
 
   const tex = new THREE.CanvasTexture(canvas)
   tex.colorSpace = THREE.SRGBColorSpace
   tex.anisotropy = 8
+  return tex
+}
+
+// ============================================================================
+// Lower Keypad Mainboard Texture: GY493-E4W / RJA520455-001V02 (matches image_5.png!)
+// Dimensions: 74.0 mm wide (X: -37.0..+37.0) x 111.0 mm long (Z: -26.0..+85.0)
+// Includes all 7 white spacer blocks + all 19 gold test points T701..T719!
+// ============================================================================
+export function createLowerKeypadPcbTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas')
+  canvas.width = 740
+  canvas.height = 1110
+  const ctx = canvas.getContext('2d')!
+
+  const xPx = (x: number) => ((x - -37.0) / 74.0) * 740
+  const zPx = (z: number) => ((z - -26.0) / 111.0) * 1110
+
+  // Authentic rich green keypad PCB soldermask
+  const bg = ctx.createLinearGradient(0, 0, 740, 1110)
+  bg.addColorStop(0, '#0c6838')
+  bg.addColorStop(0.55, '#0e743f')
+  bg.addColorStop(1, '#0a582f')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, 740, 1110)
+
+  // Darker forest-green organic curved keypad matrix traces (characteristic of GY493-E4W!)
+  ctx.strokeStyle = '#063d20'
+  ctx.lineWidth = 4.5
+  const tracePaths: [number, number][][] = [
+    [[-31, -18], [-31, 18], [-27, 36], [-26, 65]],
+    [[-26, -15], [-26, 14], [-18, 32], [-18, 72]],
+    [[-19, -10], [-19, 18], [-8, 35], [-8, 68]],
+    [[-8, 6], [6, 18], [16, 18], [26, 28]],
+    [[2, 12], [-6, 26], [-6, 48], [2, 64]],
+    [[14, 14], [6, 30], [6, 54], [14, 68]],
+    [[24, 12], [18, 24], [14, 44], [22, 60]],
+    [[-28, 44], [-14, 44], [-2, 56], [10, 56]],
+  ]
+  for (const path of tracePaths) {
+    ctx.beginPath()
+    path.forEach(([mx, mz], idx) => {
+      if (idx === 0) ctx.moveTo(xPx(mx), zPx(mz))
+      else ctx.lineTo(xPx(mx), zPx(mz))
+    })
+    ctx.stroke()
+  }
+
+  // Dark carbon via dots along matrix traces
+  const viaPts: [number, number][] = [
+    [-22, 6], [-12, 6], [-18, 24], [-12, 24], [12, 24], [25, 21],
+    [-28, 29], [-20, 29], [-12, 31], [-3, 31], [7, 37], [17, 37],
+    [-33, 44], [-25, 44], [-3, 42], [6, 48], [16, 48], [24, 42],
+    [-26, 56], [-18, 56], [4, 58], [18, 58], [-26, 70], [-14, 72], [-2, 72], [11, 68],
+  ]
+  for (const [vx, vz] of viaPts) {
+    ctx.fillStyle = '#18221d'
+    ctx.beginPath()
+    ctx.arc(xPx(vx), zPx(vz), 5.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.strokeStyle = '#24995c'
+    ctx.lineWidth = 1.5
+    ctx.stroke()
+  }
+
+  // All 7 Crisp White Silkscreen Spacer Rectangles (exact coordinates from im5_mm_grid.png!)
+  ctx.fillStyle = '#e9eef4'
+  const whiteBlocks: [number, number, number, number][] = [
+    [-11.0, 11.2, 21.5, 5.2], // Center wide bar below JN701 / C302
+    [-25.2, 32.8, 6.2, 6.5], // Left upper spacer
+    [-25.2, 59.5, 6.2, 6.8], // Left lower spacer
+    [15.8, 26.2, 13.5, 11.0], // Right large block under P702 cone spring
+    [21.2, 43.2, 6.8, 6.8], // Right middle block
+    [22.5, 59.5, 6.5, 12.2], // Right lower block under P701 spiral spring
+  ]
+  for (const [bx, bz, bw, bh] of whiteBlocks) {
+    ctx.fillRect(xPx(bx), zPx(bz), bw * 10, bh * 10)
+  }
+
+  // Iconic White Crescent 'C' Ring around left screw hole (-33.0, 56.0)
+  ctx.strokeStyle = '#f1f5f9'
+  ctx.lineWidth = 6
+  ctx.beginPath()
+  ctx.arc(xPx(-33.2), zPx(56.0), 26, -Math.PI * 0.45, Math.PI * 0.45)
+  ctx.stroke()
+  ctx.fillStyle = '#eab849'
+  ctx.beginPath()
+  ctx.arc(xPx(-33.2), zPx(56.0), 11, 0, Math.PI * 2)
+  ctx.fill()
+
+  // All 19 Numbered Gold Test Points (T701 .. T719) at exact photo coordinates!
+  const testPoints: [string, number, number][] = [
+    ['T701', 24.8, 59.8], // +V_BAT test pad!
+    ['T702', 27.6, 37.8], // -V_BAT / GND test pad!
+    ['T703', -20.5, 22.8],
+    ['T704', -29.2, 18.2],
+    ['T705', -27.5, 24.8],
+    ['T706', -14.2, 70.8],
+    ['T707', -3.0, 54.5],
+    ['T708', -2.0, 42.8],
+    ['T709', 15.2, 37.5],
+    ['T710', -19.8, 25.0],
+    ['T711', 2.5, 60.5],
+    ['T712', 9.2, 52.5],
+    ['T713', 12.0, 44.2],
+    ['T714', 16.5, 44.5],
+    ['T715', -10.8, 26.8],
+    ['T716', -21.8, 10.2],
+    ['T717', -31.2, 22.2],
+    ['T718', -28.2, 13.5],
+    ['T719', -33.8, 25.2],
+  ]
+  ctx.font = 'bold 14px "JetBrains Mono", monospace'
+  ctx.textAlign = 'center'
+  for (const [name, tx, tz] of testPoints) {
+    const px = xPx(tx)
+    const pz = zPx(tz)
+    ctx.fillStyle = '#eab849'
+    ctx.beginPath()
+    ctx.arc(px, pz, name === 'T701' || name === 'T702' ? 11.5 : 8.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#f8fafc'
+    ctx.fillText(name, px, pz - 13)
+  }
+
+  // Crisp Bottom Board Part Numbers: GY493-E4W / RJA520455-001V02 / 1528 / JN701 / P701 / P702
+  ctx.fillStyle = '#f8fafc'
+  ctx.font = 'bold 26px "JetBrains Mono", monospace'
+  ctx.fillText('GY493-E4W', xPx(6.5), zPx(76.2))
+  ctx.font = 'bold 21px "JetBrains Mono", monospace'
+  ctx.fillText('RJA520455-001V02', xPx(2.0), zPx(80.5))
+  ctx.font = 'bold 18px "JetBrains Mono", monospace'
+  ctx.fillText('1528', xPx(-13.5), zPx(55.5))
+  ctx.font = 'bold 15px "JetBrains Mono", monospace'
+  ctx.fillText('V30S 94V-0', xPx(-9.0), zPx(64.8))
+  ctx.fillText('JN701', xPx(-1.0), zPx(9.8))
+
+  ctx.save()
+  ctx.translate(xPx(35.0), zPx(39.5))
+  ctx.rotate(-Math.PI / 2)
+  ctx.fillText('P702', 0, 0)
+  ctx.restore()
+
+  ctx.save()
+  ctx.translate(xPx(35.0), zPx(62.5))
+  ctx.rotate(-Math.PI / 2)
+  ctx.fillText('P701', 0, 0)
+  ctx.restore()
+
+  // N40A3585 bottom-left stamp box
+  ctx.strokeStyle = '#f8fafc'
+  ctx.lineWidth = 2
+  ctx.strokeRect(xPx(-26.5), zPx(76.0), 82, 36)
+  ctx.font = 'bold 12px "JetBrains Mono", monospace'
+  ctx.fillText('N40A3585', xPx(-22.4), zPx(77.7))
+  ctx.fillText('A30C5', xPx(-22.4), zPx(79.1))
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.colorSpace = THREE.SRGBColorSpace
+  tex.anisotropy = 8
+  return tex
+}
+
+// ============================================================================
+// Macronix NOR Flash TSOP-48 Texture with Authentic White "9A" Factory Mark!
+// ============================================================================
+export function createMxicFlashTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 384
+  const ctx = canvas.getContext('2d')!
+
+  ctx.fillStyle = '#22252c'
+  ctx.fillRect(0, 0, 256, 384)
+
+  // Pin 1 dimple
+  ctx.fillStyle = '#111318'
+  ctx.beginPath()
+  ctx.arc(38, 338, 12, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Subtle laser-etched MXIC text
+  ctx.save()
+  ctx.translate(82, 192)
+  ctx.rotate(Math.PI / 2)
+  ctx.fillStyle = '#8b93a4'
+  ctx.textAlign = 'center'
+  ctx.font = 'bold 26px "JetBrains Mono", monospace'
+  ctx.fillText('MXIC', 0, -22)
+  ctx.font = '500 17px "JetBrains Mono", monospace'
+  ctx.fillText('MX29LV320E', 0, 4)
+  ctx.fillText('TAIWAN', 0, 26)
+  ctx.restore()
+
+  // Authentic white paint-marker factory inspection "9A" (exact match to image_5.png!)
+  ctx.strokeStyle = 'rgba(241, 245, 249, 0.88)'
+  ctx.lineWidth = 16
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  // Stylized '9' / 'A' brushstroke
+  ctx.beginPath()
+  ctx.arc(150, 145, 34, 0, Math.PI * 2)
+  ctx.moveTo(182, 145)
+  ctx.lineTo(148, 228)
+  ctx.stroke()
+
+  ctx.beginPath()
+  ctx.moveTo(92, 298)
+  ctx.lineTo(192, 248)
+  ctx.lineTo(188, 326)
+  ctx.moveTo(132, 278)
+  ctx.lineTo(188, 294)
+  ctx.stroke()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
+}
+
+// ============================================================================
+// S30FE02 Dark-Brown Polyimide LCD Flex Cable Texture (Top Center of CY802-1)
+// ============================================================================
+export function createLcdKaptonFlexTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+  const ctx = canvas.getContext('2d')!
+
+  // Dark amber-brown polyimide film
+  const g = ctx.createLinearGradient(0, 0, 0, 256)
+  g.addColorStop(0, '#3a2618')
+  g.addColorStop(0.5, '#4c321e')
+  g.addColorStop(1, '#382416')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 512, 256)
+
+  // Fine copper trace lines shimmering under polyimide
+  ctx.strokeStyle = 'rgba(217, 155, 78, 0.22)'
+  ctx.lineWidth = 2
+  for (let x = 24; x < 488; x += 8) {
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x, 256)
+    ctx.stroke()
+  }
+
+  // Silver solder alignment rivets left & right
+  for (const sx of [68, 444]) {
+    ctx.fillStyle = '#cbd5e1'
+    ctx.beginPath()
+    ctx.arc(sx, 128, 16, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  // Center dark stamp window with white "S30FE02" code (exact match to image_5.png!)
+  ctx.fillStyle = '#242936'
+  ctx.strokeStyle = 'rgba(255,255,255,0.28)'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.roundRect(176, 98, 160, 56, 10)
+  ctx.fill()
+  ctx.stroke()
+
+  ctx.fillStyle = '#f8fafc'
+  ctx.textAlign = 'center'
+  ctx.font = 'bold 24px "JetBrains Mono", monospace'
+  ctx.fillText('S30FE02', 256, 135)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.colorSpace = THREE.SRGBColorSpace
   return tex
 }
 

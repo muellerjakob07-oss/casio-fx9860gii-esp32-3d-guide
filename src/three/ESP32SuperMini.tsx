@@ -83,6 +83,7 @@ export function ESP32SuperMini({
   return (
     <group
       ref={groupRef}
+      visible={currentStep >= 3 || selectedId === 'esp32_board'}
       position={ESP32.CENTER}
       rotation={[0, ESP32.ROTATION_Y, 0]}
     >

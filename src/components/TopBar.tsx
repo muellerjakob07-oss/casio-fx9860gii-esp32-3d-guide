@@ -1,4 +1,5 @@
 import {
+  Camera,
   CheckSquare,
   Cpu,
   Magnet,
@@ -18,6 +19,7 @@ interface TopBarProps {
   checklistDone: number
   checklistTotal: number
   onOpenChecklist: () => void
+  onOpenPhotos: () => void
 }
 
 export function TopBar({
@@ -30,6 +32,7 @@ export function TopBar({
   checklistDone,
   checklistTotal,
   onOpenChecklist,
+  onOpenPhotos,
 }: TopBarProps) {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
@@ -43,18 +46,18 @@ export function TopBar({
             CASIO fx-9860GII × ESP32-C3 SuperMini
           </h1>
           <p className="truncate text-[11px] text-[var(--text-muted)]">
-            Interaktive 3D-Bauanleitung · Gemini API über WLAN
+            1:1 Rev. CY802-1 / GY493-E4W · Gemini API 3D-Guide
           </p>
         </div>
       </div>
 
-      {/* Center Live Electrical Telemetry Capsule (Clickable to toggle Magnet/SW1) */}
+      {/* Center Live Electrical Telemetry Capsule */}
       <button
         type="button"
         id="topbar-power-telemetry"
         onClick={onTogglePower}
-        title="Klicken, um den Magnet-Reedschalter SW1 umzuschalten"
-        className="glass-panel pointer-events-auto hidden items-center gap-3 rounded-full px-4 py-2 text-xs transition hover:bg-[var(--surface-glass-strong)] md:flex"
+        title="Klicken, um den Magnet-Reedschalter SW1 an der linken Flanke umzuschalten"
+        className="glass-panel pointer-events-auto hidden items-center gap-3 rounded-full px-4 py-2 text-xs transition hover:bg-[var(--surface-glass-strong)] lg:flex"
       >
         <Magnet
           className={`h-3.5 w-3.5 transition-colors ${
@@ -76,6 +79,17 @@ export function TopBar({
 
       {/* Right Utility Actions */}
       <div className="glass-panel pointer-events-auto flex items-center gap-1 rounded-2xl p-1.5">
+        <button
+          type="button"
+          id="btn-open-photos"
+          onClick={onOpenPhotos}
+          title="Echte Teardown-Fotos zum Abgleich öffnen"
+          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
+        >
+          <Camera className="h-3.5 w-3.5 text-[var(--accent)]" />
+          <span className="hidden sm:inline">Original-Fotos</span>
+        </button>
+
         <button
           type="button"
           id="btn-toggle-labels"

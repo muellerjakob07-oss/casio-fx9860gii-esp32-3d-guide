@@ -1,35 +1,30 @@
-# CASIO fx-9860GII × ESP32-C3 SuperMini — Interaktive 3D-Bauanleitung
+# CASIO fx-9860GII × ESP32-C3 SuperMini — 1:1 Interaktive 3D-Bauanleitung
 
-Interaktive, anfängerfreundliche 3D-Bauanleitungs-Web-App (auf Deutsch) für den unsichtbaren Hardware-Umbau eines **CASIO fx-9860GII** Grafikrechners mit einem **ESP32-C3 SuperMini**, um per WLAN über HTTPS Fragen an die **Google Gemini API** zu senden und die Antworten auf dem originalen **128 × 64 Monochrom-LCD** anzuzeigen.
+Interaktive, anfängerfreundliche 3D-Bauanleitungs-Web-App (auf Deutsch) für den unsichtbaren Hardware-Umbau eines realen **CASIO fx-9860GII (USB Power Graphic 2, Platinen-Revision `CY802-1` + `GY493-E4W`)** mit einem **ESP32-C3 SuperMini**, um per WLAN über HTTPS Fragen an die **Google Gemini API** zu senden und die Antworten auf dem originalen **128 × 64 Monochrom-LCD** anzuzeigen.
 
-## Features
+## 1:1 Hardware-Abgleich nach echtem Teardown
 
-- **100 % prozedurale 3D-Baugruppen (Maßstab 1 Einheit = 1 mm):**
-  - **CASIO fx-9860GII** (`184 × 91,5 × 21,2 mm`): Vorder- und Rückschale, 6 animierte Kreuzschlitzschrauben, Batteriefach mit 4 herausnehmbaren **AAA-NiMH-Akkus (`1.2V NiMH`)** & konischen Spiralfedern, **CR2032-RAM-Backup-Halter**, freie **Einbaunische** (`28 × 22 × 7 mm`) sowie ein echtes, animiertes **128 × 64 Monochrom-STN-Display**.
-  - **CASIO Hauptplatine (FR4):** Smaragdgrüner Lötstopplack, Mini-USB, 2,5-mm-TRS-Buchse mit 3 beschrifteten Gold-Lötpads (`TIP = TX`, `RING = RX`, `SLEEVE = GND`), 2 COB-Vergüsse, weißes 24-poliges **Display-Flachbandkabel (FFC)** inkl. Warnhinweis.
-  - **ESP32-C3 SuperMini (`22,5 × 18,0 × 1,0 mm`):** USB-C, `BOOT`/`RST`-Taster, 45° gedrehter `ESP32-C3 QFN32`-Chip, `ME6211`-LDO, leuchtende blaue `GPIO8`-Status-LED, rote Keramik-WLAN-Antenne mit **Antenna Keep-Out-Zone** und alle **16 anklickbaren Gold-Rand-Pads**.
-  - **Schutz- & Schalt-Elektronik:** `AO3401` (`A19T`) P-Kanal-MOSFET, `R1` (`10 kΩ`), `R2` & `R3` (`1 kΩ`), `D1` (`1N4007` mit silbernem Kathoden-Ring), `C1` (`100 µF / 10 V`), Magnet-Reedschalter `SW1` mit beweglichen Kontaktzungen, Neodym-Magnet und bernsteinfarbenes **Kapton-Band**.
-- **8 geführte Bauschritte** mit butterweichen Kamera-Fahrten, Multimeter-Durchgangsprüfung (Schritt 2), Kapton-Einbau (Schritt 6), Magnet-Test (Schritt 7) und Live-Gemini-Simulation (Schritt 8).
-- **Interaktives Steuerungs-HUD:** Stufenlose Explosionsansicht (0–100 %), Gehäuse-Röntgenblick (0–100 %), Live-Schalter **Magnet / SW1** (`0,00 mA` Standby vs. `4,50 V / ~85 mA` aktiv), 4 Kamera-Presets, Studio Dark/Light-Modus, Bauteil- & Pin-Inspektor sowie eine persistente Anfänger-Checkliste.
+- **Zweistufiger Platinen-Aufbau (`1 Three.js-Einheit = 1 mm`):**
+  - **Obere CPU-Platine (`CY802-1 / RJA532593-001V01`):** Sitzt ~6 mm erhöht auf dem gestanzten Stahl-Displayrahmen (inkl. seitlicher Schraublaschen). Oben **links** die 2,5-mm-Buchse **`CN401`** samt den quadratischen Gold-Prüfpads und den rot/weißen Backlight-Drähten **`P902`**, mittig das braune Polyimid-Displaykabel **`S30FE02`**, oben **rechts** die Mini-USB-Buchse **`CN102`**, darunter die beiden abgerundet-quadratischen COBs (`U101`, `U301`), der nichtflüchtige **Macronix NOR-Flash-Chip (`MXIC`, Markierung „9A“ — kein CR2032 nötig!)**, der blaue liegende Elko **`C302`** und rechts das fest verlötete weiße 21-polige Verbindungs-Flachbandkabel **`JN701`**.
+  - **Untere Tastenplatine (`GY493-E4W / RJA520455-001V02`):** Liegt 6 mm tiefer hinter der Tastaturmatte, mit allen weißen Siebdruck-Abstandsfeldern, den 19 goldenen Testpunkten **`T701`–`T719`** sowie rechts den beiden direkt aufgelöteten Batteriefedern **`P702` (`−V_BAT` Kegelfeder / Pad `T702`)** und **`P701` (`+V_BAT` Spiralfeder / Pad `T701`)** für die **4 querliegenden AAA-NiMH-Zellen**.
+- **Angepasster Einbauplan in der 6-mm-Stufen-Nische:**
+  - **ESP32-C3 SuperMini (`22,5 × 18,0 mm`):** Liegt flach über einer Lage **Kapton-Band** (zum Schutz der Tasten-Testpunkte `T703–T719`) links im 6-mm-Stufengraben zwischen CPU-Platine und Batteriewanne; die **rote Keramik-WLAN-Antenne** zeigt frei zur **linken ABS-Außenwand**.
+  - **Kurze linke UART-Führung:** Direkt von `CN401` (oben links) entlang der linken Platinenkante über `R2`/`R3` (`1 kΩ`) zu `GPIO20`/`GPIO21` — komplett fernab vom gelöteten weißen FFC `JN701`.
+  - **Magnet-Reedschalter `SW1`:** Sitzt im freien linken Seitenkanal neben den querliegenden AAA-Akkus.
+- **Integrierter Original-Foto-Abgleich:** Über den Button **„Original-Fotos“** in der oberen Leiste lassen sich die realen Teardown-Fotos direkt mit dem 3D-Modell vergleichen.
 
 ## Schaltplan-Übersicht (8 Verbindungen)
 
-| # | Leitung | Farbe | Verbindung |
-|---|---------|-------|------------|
-| 1 | TX-Daten | Blau | Casio 2,5 mm `TIP (TX)` → `R2 (1 kΩ)` → ESP32 `GPIO20 (RX)` |
-| 2 | RX-Daten | Grün | Casio 2,5 mm `RING (RX)` → `R3 (1 kΩ)` → ESP32 `GPIO21 (TX)` |
-| 3 | Daten-Masse | Schwarz | Casio 2,5 mm `SLEEVE (GND)` → ESP32 `GND` |
-| 4 | Batterie-Masse | Schwarz | Batteriefach `-V_BAT` → ESP32 `GND` |
-| 5 | Batterie-Plus | Rot | Batteriefach `+V_BAT (4,8–6,0 V)` → `AO3401 Pin 2 (Source)` |
-| 6 | Gate-Steuerung | Gelb/Orange | `AO3401 Source` → `R1 (10 kΩ)` → `AO3401 Pin 1 (Gate)` → `SW1` → `GND` |
-| 7 | Geschaltetes 5V | Rot-Orange | `AO3401 Pin 3 (Drain)` → `D1 (1N4007, Silberring zum ESP)` → ESP32 `5V` |
-| 8 | Puffer-Elko | Rot/Schwarz | `C1 (100 µF / 10 V)` parallel zwischen ESP32 `5V (+)` und `GND (-)` |
-
-## Tech-Stack
-
-- **Vite + React 19 + TypeScript**
-- **Three.js + `@react-three/fiber` + `@react-three/drei`**
-- **Tailwind CSS v4 + `lucide-react`**
+| # | Leitung | Farbe | Reale Verbindung (`CY802-1` / `GY493-E4W`) |
+|---|---------|-------|---------------------------------------------|
+| 1 | TX-Daten | Blau | `CN401` TIP-Goldpad (oben links) → `R2 (1 kΩ)` → ESP32 `GPIO20 (RX)` |
+| 2 | RX-Daten | Grün | `CN401` RING-Goldpad `Y` (oben links) → `R3 (1 kΩ)` → ESP32 `GPIO21 (TX)` |
+| 3 | Daten-Masse | Schwarz | `CN401` SLEEVE-Massepad → innen um Stufe → ESP32 `GND` |
+| 4 | Batterie-Masse | Schwarz | Tastenplatine Pad `T702` / Feder `P702` (`−V_BAT`) → ESP32 `GND` |
+| 5 | Batterie-Plus | Rot | Tastenplatine Pad `T701` / Feder `P701` (`+V_BAT`) → `AO3401 Pin 2 (Source)` |
+| 6 | Gate-Steuerung | Gelb/Orange | `AO3401 Source` → `R1 (10 kΩ)` → `AO3401 Gate` → `SW1` (linker Kanal) → `GND` |
+| 7 | Geschaltetes 5V | Rot-Orange | `AO3401 Pin 3 (Drain)` → `D1 (1N4007, Silberring links zum ESP)` → ESP32 `5V` |
+| 8 | Puffer-Elko | Rot/Schwarz | `C1 (100 µF / 10 V, flach liegend)` parallel zwischen ESP32 `5V (+)` und `GND (−)` |
 
 ## Lokal starten
 
@@ -38,7 +33,7 @@ npm install
 npm run dev
 ```
 
-Produktions-Build erstellen und testen:
+Produktions-Build & Vorschau:
 
 ```bash
 npm run lint

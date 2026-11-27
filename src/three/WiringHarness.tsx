@@ -15,7 +15,7 @@ interface WiringHarnessProps {
   onHover: (id: string | null) => void
 }
 
-type LayerKey = 'pcb' | 'r2r3' | 'bat' | 'mod' | 'sw1'
+type LayerKey = 'pcb' | 'r2r3' | 'mod' | 'sw1'
 
 interface WaypointSpec {
   pos: Vec3
@@ -24,18 +24,18 @@ interface WaypointSpec {
 
 interface WireSegmentDef {
   key: string
-  wireId: string // links to COMPONENTS_DB
+  wireId: string
   color: string
   radius: number
-  minStep: number // step when this wire appears
-  solderStep: number // step when solder joints glow warm
+  minStep: number
+  solderStep: number
   points: WaypointSpec[]
   flowType?: 'tx' | 'rx' | 'power' | 'gate'
   flowReverse?: boolean
 }
 
 const WIRE_SEGMENTS: WireSegmentDef[] = [
-  // 1a. TX-Leitung (Blau): Casio 2.5mm TIP (TX) -> R2 Top
+  // 1a. TX-Leitung (Blau): CN401 TIP-Goldpad (oben links) -> R2 Top
   {
     key: 'tx_a',
     wireId: 'wire_tx',
@@ -46,12 +46,12 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'tx',
     points: [
       { pos: CASIO_PORTS.PAD_TIP_TX, layer: 'pcb' },
-      { pos: [23.8, 9.2, -70.8], layer: 'r2r3' },
-      { pos: [26.8, 9.0, -67.5], layer: 'r2r3' },
+      { pos: [-27.8, 13.1, -64.0], layer: 'pcb' },
+      { pos: [-30.2, 13.1, -48.0], layer: 'r2r3' },
       { pos: MOD_PARTS.R2_1K_TX.LEAD_TOP, layer: 'r2r3' },
     ],
   },
-  // 1b. TX-Leitung (Blau): R2 Bottom -> right PCB channel -> inner niche perimeter -> ESP32 GPIO20 (RX)
+  // 1b. TX-Leitung (Blau): R2 Bottom -> straight down left margin & step -> ESP32 GPIO20 (RX)
   {
     key: 'tx_b',
     wireId: 'wire_tx',
@@ -62,18 +62,14 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'tx',
     points: [
       { pos: MOD_PARTS.R2_1K_TX.LEAD_BOT, layer: 'r2r3' },
-      { pos: [30.2, 8.9, -44.0], layer: 'pcb' },
-      { pos: [35.2, 8.8, -12.0], layer: 'pcb' },
-      { pos: [34.4, 8.9, 25.0], layer: 'pcb' },
-      { pos: [32.6, 9.2, 48.2], layer: 'mod' },
-      { pos: [14.8, 8.8, 49.5], layer: 'mod' },
-      { pos: [14.8, 8.6, 69.8], layer: 'mod' },
-      { pos: [34.8, 8.6, 70.0], layer: 'mod' },
+      { pos: [-30.2, 12.9, -12.0], layer: 'pcb' },
+      { pos: [-30.2, 12.6, 1.8], layer: 'pcb' },
+      { pos: [-30.2, 8.8, 3.8], layer: 'mod' },
       { pos: ESP_PAD.GPIO20_RX, layer: 'mod' },
     ],
   },
 
-  // 2a. RX-Leitung (Grün): Casio 2.5mm RING (RX) -> R3 Top
+  // 2a. RX-Leitung (Grün): CN401 RING-Goldpad ('Y', oben links) -> R3 Top
   {
     key: 'rx_a',
     wireId: 'wire_rx',
@@ -85,12 +81,12 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowReverse: true,
     points: [
       { pos: CASIO_PORTS.PAD_RING_RX, layer: 'pcb' },
-      { pos: [23.0, 9.6, -75.0], layer: 'r2r3' },
-      { pos: [30.2, 9.2, -70.2], layer: 'r2r3' },
+      { pos: [-22.5, 13.5, -67.5], layer: 'pcb' },
+      { pos: [-33.6, 13.3, -54.0], layer: 'r2r3' },
       { pos: MOD_PARTS.R3_1K_RX.LEAD_TOP, layer: 'r2r3' },
     ],
   },
-  // 2b. RX-Leitung (Grün): R3 Bottom -> right PCB channel -> inner niche perimeter -> ESP32 GPIO21 (TX)
+  // 2b. RX-Leitung (Grün): R3 Bottom -> straight down outer-left margin & step -> ESP32 GPIO21 (TX)
   {
     key: 'rx_b',
     wireId: 'wire_rx',
@@ -102,18 +98,14 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowReverse: true,
     points: [
       { pos: MOD_PARTS.R3_1K_RX.LEAD_BOT, layer: 'r2r3' },
-      { pos: [34.6, 8.9, -44.0], layer: 'pcb' },
-      { pos: [37.4, 8.8, -12.0], layer: 'pcb' },
-      { pos: [36.4, 8.9, 25.0], layer: 'pcb' },
-      { pos: [34.2, 9.2, 48.8], layer: 'mod' },
-      { pos: [13.6, 8.8, 50.6], layer: 'mod' },
-      { pos: [13.6, 8.6, 71.2], layer: 'mod' },
-      { pos: [37.8, 8.6, 71.2], layer: 'mod' },
+      { pos: [-33.8, 12.9, -12.0], layer: 'pcb' },
+      { pos: [-33.6, 12.6, 1.8], layer: 'pcb' },
+      { pos: [-32.8, 8.8, 3.8], layer: 'mod' },
       { pos: ESP_PAD.GPIO21_TX, layer: 'mod' },
     ],
   },
 
-  // 3. Daten-Masse (Schwarz): Casio 2.5mm SLEEVE (GND) -> ESP32 GND
+  // 3. Daten-Masse (Schwarz): CN401 SLEEVE (GND) -> inner step route (clear of antenna!) -> ESP32 GND
   {
     key: 'gnd_data',
     wireId: 'wire_gnd_data',
@@ -123,16 +115,17 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 3,
     points: [
       { pos: CASIO_PORTS.PAD_SLEEVE_GND, layer: 'pcb' },
-      { pos: [19.0, 9.0, -79.2], layer: 'pcb' },
-      { pos: [34.0, 8.8, -68.0], layer: 'pcb' },
-      { pos: [34.4, 8.6, -12.0], layer: 'pcb' },
-      { pos: [33.2, 8.8, 25.0], layer: 'pcb' },
-      { pos: [29.8, 9.4, 48.2], layer: 'mod' },
+      { pos: [-31.8, 13.0, -68.0], layer: 'pcb' },
+      { pos: [-35.2, 12.8, -34.0], layer: 'pcb' },
+      { pos: [-34.8, 12.6, 1.6], layer: 'pcb' },
+      { pos: [-26.0, 7.6, 3.6], layer: 'mod' },
+      { pos: [-11.8, 7.6, 4.8], layer: 'mod' },
+      { pos: [-12.2, 8.0, 23.8], layer: 'mod' },
       { pos: ESP_PAD.GND, layer: 'mod' },
     ],
   },
 
-  // 4. Batterie-Masse (Schwarz): Batteriefach -V_BAT -> ESP32 GND
+  // 4. Batterie-Masse (Schwarz): P702 / Testpad T702 (-V_BAT) -> along battery top edge -> ESP32 GND
   {
     key: 'vbat_neg',
     wireId: 'wire_vbat_neg',
@@ -141,16 +134,15 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     minStep: 4,
     solderStep: 4,
     points: [
-      { pos: BATTERY_BAY.NEG_TAB, layer: 'bat' },
-      { pos: [-26.0, 10.6, 31.2], layer: 'pcb' },
-      { pos: [-6.0, 10.2, 31.0], layer: 'pcb' },
-      { pos: [10.8, 10.0, 31.5], layer: 'mod' },
-      { pos: [12.4, 9.6, 48.0], layer: 'mod' },
+      { pos: BATTERY_BAY.NEG_TAB, layer: 'pcb' },
+      { pos: [31.5, 7.2, 26.5], layer: 'pcb' },
+      { pos: [14.5, 7.2, 24.4], layer: 'mod' },
+      { pos: [-6.0, 7.4, 24.4], layer: 'mod' },
       { pos: ESP_PAD.GND, layer: 'mod' },
     ],
   },
 
-  // 5. Batterie-Plus Eingang (Rot): Batteriefach +V_BAT -> AO3401 Pin 2 (Source)
+  // 5. Batterie-Plus Eingang (Rot): P701 / Testpad T701 (+V_BAT) -> right margin -> AO3401 Pin 2 (Source)
   {
     key: 'vbat_pos',
     wireId: 'wire_vbat_pos',
@@ -160,9 +152,11 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 4,
     flowType: 'power',
     points: [
-      { pos: BATTERY_BAY.POS_TAB, layer: 'bat' },
-      { pos: [8.5, 11.2, 36.2], layer: 'mod' },
-      { pos: [12.8, 9.4, 38.2], layer: 'mod' },
+      { pos: BATTERY_BAY.POS_TAB, layer: 'pcb' },
+      { pos: [33.8, 7.2, 54.0], layer: 'pcb' },
+      { pos: [33.8, 7.2, 25.0], layer: 'pcb' },
+      { pos: [15.0, 7.6, 23.2], layer: 'mod' },
+      { pos: [4.2, 7.8, 22.8], layer: 'mod' },
       { pos: MOD_PARTS.AO3401.PIN2_SOURCE, layer: 'mod' },
     ],
   },
@@ -177,7 +171,7 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 4,
     points: [
       { pos: MOD_PARTS.AO3401.PIN2_SOURCE, layer: 'mod' },
-      { pos: [14.7, 8.7, 39.2], layer: 'mod' },
+      { pos: [7.2, 7.8, 22.4], layer: 'mod' },
       { pos: MOD_PARTS.R1_10K.LEAD_SOURCE, layer: 'mod' },
     ],
   },
@@ -191,11 +185,11 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 4,
     points: [
       { pos: MOD_PARTS.R1_10K.LEAD_GATE, layer: 'mod' },
-      { pos: [14.7, 8.7, 34.8], layer: 'mod' },
+      { pos: [7.0, 7.8, 16.8], layer: 'mod' },
       { pos: MOD_PARTS.AO3401.PIN1_GATE, layer: 'mod' },
     ],
   },
-  // 6c. Gate-Steuerung (Gelb/Orange): AO3401 Pin 1 (Gate) -> SW1 Top Lead
+  // 6c. Gate-Steuerung (Gelb/Orange): AO3401 Pin 1 (Gate) -> SW1 Top Lead (left channel)
   {
     key: 'gate_c',
     wireId: 'wire_gate',
@@ -206,8 +200,9 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'gate',
     points: [
       { pos: MOD_PARTS.AO3401.PIN1_GATE, layer: 'mod' },
-      { pos: [18.5, 9.4, 31.8], layer: 'mod' },
-      { pos: [31.0, 10.2, 29.8], layer: 'sw1' },
+      { pos: [1.5, 7.8, 14.5], layer: 'mod' },
+      { pos: [-5.5, 7.4, 24.8], layer: 'mod' },
+      { pos: [-26.5, 7.6, 25.0], layer: 'sw1' },
       { pos: MOD_PARTS.SW1_REED.LEAD_TOP_GATE, layer: 'sw1' },
     ],
   },
@@ -222,8 +217,8 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'gate',
     points: [
       { pos: MOD_PARTS.SW1_REED.LEAD_BOT_GND, layer: 'sw1' },
-      { pos: [36.5, 10.0, 48.2], layer: 'mod' },
-      { pos: [27.5, 9.2, 49.4], layer: 'mod' },
+      { pos: [-29.0, 7.8, 49.0], layer: 'sw1' },
+      { pos: [-24.0, 7.6, 25.2], layer: 'mod' },
       { pos: ESP_PAD.GND, layer: 'mod' },
     ],
   },
@@ -239,7 +234,7 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'power',
     points: [
       { pos: MOD_PARTS.AO3401.PIN3_DRAIN, layer: 'mod' },
-      { pos: [19.6, 8.8, 38.0], layer: 'mod' },
+      { pos: [4.5, 7.9, 22.0], layer: 'mod' },
       { pos: MOD_PARTS.D1_1N4007.LEAD_ANODE, layer: 'mod' },
     ],
   },
@@ -254,7 +249,7 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     flowType: 'power',
     points: [
       { pos: MOD_PARTS.D1_1N4007.LEAD_CATHODE, layer: 'mod' },
-      { pos: [19.95, 8.85, 48.6], layer: 'mod' },
+      { pos: [-11.0, 8.1, 22.4], layer: 'mod' },
       { pos: ESP_PAD.V5, layer: 'mod' },
     ],
   },
@@ -269,7 +264,7 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 5,
     points: [
       { pos: MOD_PARTS.C1_100UF.LEAD_POS, layer: 'mod' },
-      { pos: [22.4, 9.2, 49.0], layer: 'mod' },
+      { pos: [-12.2, 8.2, 21.4], layer: 'mod' },
       { pos: ESP_PAD.V5, layer: 'mod' },
     ],
   },
@@ -283,7 +278,7 @@ const WIRE_SEGMENTS: WireSegmentDef[] = [
     solderStep: 5,
     points: [
       { pos: MOD_PARTS.C1_100UF.LEAD_NEG, layer: 'mod' },
-      { pos: [25.2, 9.1, 49.1], layer: 'mod' },
+      { pos: [-15.0, 8.2, 21.4], layer: 'mod' },
       { pos: ESP_PAD.GND, layer: 'mod' },
     ],
   },
@@ -295,8 +290,6 @@ function getLayerY(layer: LayerKey, L: LayerOffsets): number {
       return L.pcbY
     case 'r2r3':
       return L.r2r3Y
-    case 'bat':
-      return L.frontShellY // Battery tabs sit mounted inside front shell battery cradle
     case 'mod':
       return L.modY
     case 'sw1':
@@ -347,7 +340,7 @@ function DynamicWireSegment({
     if (!visible) return
     const L = layersRef.current
 
-    const sig = `${L.pcbY.toFixed(3)}_${L.r2r3Y.toFixed(3)}_${L.frontShellY.toFixed(3)}_${L.modY.toFixed(3)}_${L.sw1Y.toFixed(3)}`
+    const sig = `${L.pcbY.toFixed(3)}_${L.r2r3Y.toFixed(3)}_${L.modY.toFixed(3)}_${L.sw1Y.toFixed(3)}`
     if (sig !== lastGeoSigRef.current) {
       lastGeoSigRef.current = sig
       for (let i = 0; i < seg.points.length; i++) {
@@ -358,7 +351,6 @@ function DynamicWireSegment({
       updateDynamicTubeGeometry(tubeGeo, curve, TUBULAR_SEGMENTS, seg.radius, RADIAL_SEGMENTS)
     }
 
-    // Keep metallic solder cones locked 100% onto start & end wire tips
     const pStart = pointsPool[0]
     const pEnd = pointsPool[pointsPool.length - 1]
     if (coneStartRef.current) {
@@ -368,7 +360,6 @@ function DynamicWireSegment({
       coneEndRef.current.position.set(pEnd.x, pEnd.y + 0.15, pEnd.z)
     }
 
-    // Warm molten solder glow highlight when actively soldering this step
     const t = state.clock.elapsedTime
     const glowing = currentStep === seg.solderStep
     const glowIntensity = glowing ? (0.45 + 0.55 * Math.sin(t * 6.5)) * (0.4 + L.solderGlow * 0.8) : 0
@@ -379,7 +370,6 @@ function DynamicWireSegment({
       solderEndMatRef.current.emissiveIntensity = glowIntensity
     }
 
-    // Animated signal & electrical current pulses along the wire!
     if (seg.flowType) {
       const lp = livePhaseRef.current
       let flowActive = false
@@ -423,7 +413,6 @@ function DynamicWireSegment({
 
   return (
     <group visible={visible}>
-      {/* Insulated Silicone Wire Tube */}
       <mesh
         geometry={tubeGeo}
         castShadow
@@ -446,9 +435,8 @@ function DynamicWireSegment({
         />
       </mesh>
 
-      {/* Shiny Metallic Solder Cones (Lötzinn-Kegel) at Both Wire Ends */}
       <mesh ref={coneStartRef}>
-        <coneGeometry args={[0.62, 0.72, 12]} />
+        <coneGeometry args={[0.58, 0.68, 12]} />
         <meshStandardMaterial
           ref={solderStartMatRef}
           color="#dce3ec"
@@ -459,7 +447,7 @@ function DynamicWireSegment({
         />
       </mesh>
       <mesh ref={coneEndRef}>
-        <coneGeometry args={[0.62, 0.72, 12]} />
+        <coneGeometry args={[0.58, 0.68, 12]} />
         <meshStandardMaterial
           ref={solderEndMatRef}
           color="#dce3ec"
@@ -470,7 +458,6 @@ function DynamicWireSegment({
         />
       </mesh>
 
-      {/* Animated Glowing Light Pulses for UART TX/RX & Power Flow */}
       {seg.flowType &&
         Array.from({ length: PULSES_PER_FLOW_WIRE }).map((_, i) => (
           <mesh
